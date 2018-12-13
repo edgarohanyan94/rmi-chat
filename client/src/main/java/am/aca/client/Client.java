@@ -20,7 +20,7 @@ public class Client {
 
         try {
             ChatServer chatServer = (ChatServer) Naming.lookup(BINDING_NAME);
-            new Thread(new ChatClientImpl(chatServer,name));
+            new Thread(new ChatClientImpl(chatServer, name)).start();
         } catch (NotBoundException e) {
             e.printStackTrace();
         } catch (MalformedURLException e) {

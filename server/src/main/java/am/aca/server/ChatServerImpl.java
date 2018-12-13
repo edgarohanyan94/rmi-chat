@@ -45,21 +45,22 @@ public class ChatServerImpl extends UnicastRemoteObject implements ChatServer {
         clientsName.remove(client.getName());
 
         for (ChatClient c : clients) {
-            client.update("server", client.getName() + " has left");
+            c.update("server", client.getName() + " has left");
         }
 
 
     }
 
     @Override
-    public synchronized void broadcast(String clientName, String message) throws RemoteException {
+    public void broadcast(String clientName, String message) throws RemoteException {
         for (ChatClient client : clients) {
             client.update(clientName, message);
         }
     }
 
     @Override
-    public synchronized void list(ChatClient client) throws RemoteException {
+    public void list(ChatClient client) throws RemoteException {
         client.update("server", " Active users: " + clientsName.toString());
     }
+
 }
