@@ -9,4 +9,6 @@ public interface ChatServer extends Remote {
     void disconnect(ChatClient c) throws RemoteException;
 
     void broadcast(String clientName, String message) throws RemoteException;
+
+    void list(ChatClient client) throws RemoteException;
 }
