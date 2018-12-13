@@ -50,4 +50,16 @@ public class ChatServerImpl extends UnicastRemoteObject implements ChatServer {
 
 
     }
+
+    @Override
+    public synchronized void broadcast(String clientName, String message) throws RemoteException {
+        for (ChatClient client : clients) {
+            client.update(clientName, message);
+        }
+    }
+
+    @Override
+    public synchronized void list(ChatClient client) throws RemoteException {
+        client.update("server", " Active users: " + clientsName.toString());
+    }
 }
