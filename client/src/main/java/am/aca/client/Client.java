@@ -18,6 +18,10 @@ public class Client {
         System.out.print("Your name: ");
         String name = scanner.nextLine().trim();
 
+        System.err.println("write \"LIST\" to see active users");
+        System.err.println("write \"QUIT\" to exit from chat");
+
+
         try {
             ChatServer chatServer = (ChatServer) Naming.lookup(BINDING_NAME);
             new Thread(new ChatClientImpl(chatServer, name)).start();
