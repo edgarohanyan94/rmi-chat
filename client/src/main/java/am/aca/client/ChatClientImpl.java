@@ -5,12 +5,14 @@ import am.aca.common.ChatServer;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class ChatClientImpl extends UnicastRemoteObject implements ChatClient, Runnable {
 
     private ChatServer server;
     private String clientName;
+
 
     private static final String QUIT = "QUIT";
     private static final String LIST = "LIST";
@@ -19,7 +21,9 @@ public class ChatClientImpl extends UnicastRemoteObject implements ChatClient, R
         this.clientName = clientName;
         this.server = server;
         this.server.connect(clientName, this);
+
     }
+
 
     @Override
     public synchronized void update(String name, String message) throws RemoteException {
@@ -34,6 +38,12 @@ public class ChatClientImpl extends UnicastRemoteObject implements ChatClient, R
     }
 
     @Override
+    public void getUsers() throws RemoteException, SQLException {
+
+    }
+
+
+    @Override
     public void run() {
         Scanner scanner = new Scanner(System.in);
         String message;
@@ -42,6 +52,9 @@ public class ChatClientImpl extends UnicastRemoteObject implements ChatClient, R
             message = scanner.nextLine().trim();
 
             switch (message) {
+                case "aaa":
+
+                    break;
                 case QUIT:
                     try {
                         server.disconnect(this);

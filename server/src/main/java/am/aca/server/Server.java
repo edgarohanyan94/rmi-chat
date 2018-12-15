@@ -6,6 +6,8 @@ import am.aca.common.ChatServer;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.sql.Connection;
+import java.sql.DriverManager;
 
 public class Server {
 
@@ -18,9 +20,12 @@ public class Server {
 
             Registry registry = LocateRegistry.createRegistry(PORT);
             registry.rebind(BINDING_NAME, chatServer);
+
             System.out.println("Server has started");
+
         } catch (RemoteException e) {
             e.printStackTrace();
         }
     }
 }
+

@@ -1,16 +1,36 @@
 package am.aca.server;
 
+
 import am.aca.common.ChatClient;
 import am.aca.common.ChatServer;
 
+
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ChatServerImpl extends UnicastRemoteObject implements ChatServer {
     private List<ChatClient> clients;
     private List<String> clientsName;
+
+    private static Connection connection = getConnection();
+
+    private static Connection getConnection() {
+        try {
+            Connection connection = DriverManager.getConnection(
+                    "jdbc:postgresql://localhost:5432/chat",
+                    "postgres",
+                    "root"
+            );
+
+            return connection;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     protected ChatServerImpl() throws RemoteException {
         this.clients = new ArrayList<>();
@@ -28,7 +48,7 @@ public class ChatServerImpl extends UnicastRemoteObject implements ChatServer {
 
         int count = clients.size();
 
-        StringBuffer msg = new StringBuffer("Welcome")
+        StringBuffer msg = new StringBuffer("Welcome ")
                 .append(username)
                 .append(", ");
         msg.append("There ")
@@ -62,5 +82,68 @@ public class ChatServerImpl extends UnicastRemoteObject implements ChatServer {
     public void list(ChatClient client) throws RemoteException {
         client.update("server", " Active users: " + clientsName.toString());
     }
+
+    @Override
+    public boolean checkUsername(String name) throws RemoteException {
+        String sql = "SELECT username FROM users WHERE username = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, name);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return true;
+            } else {
+                return false;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+
+    }
+
+    @Override
+    public void registred(String name) throws RemoteException {
+        String sql = "INSERT INTO users(username) VALUES (?)";
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+//            preparedStatement.setInt(1, 3);
+            preparedStatement.setString(1, name);
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+//    @Override
+//    public void getUsers(ChatClient client) throws RemoteException {
+//        try {
+//            Connection connection = DriverManager.getConnection(
+//                    "jdbc:postgresql://localhost:5432/chat",
+//                    "postgres",
+//                    "root"
+//            );
+//
+//            PreparedStatement statement = connection.prepareStatement("SELECT * FROM chat");
+//            ResultSet resultSet = statement.executeQuery();
+//
+//            while (resultSet.next()) {
+//                int id = resultSet.getInt("id");
+//                String username = resultSet.getString("username");
+//                client.print(username);
+//
+//            }
+//
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//
+//        }
+//
+//    }
+
 
 }
