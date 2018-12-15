@@ -18,6 +18,11 @@ public interface ChatServer extends Remote {
 
     boolean checkUsername(String username) throws RemoteException;
 
-    void registred(String name) throws RemoteException;
+    boolean checkPassword(String username, String password) throws RemoteException;
+
+    void registred(String name, String password) throws RemoteException;
+
+    boolean hasDelete(String username, String password) throws RemoteException;
+
 
 }

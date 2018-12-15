@@ -105,45 +105,61 @@ public class ChatServerImpl extends UnicastRemoteObject implements ChatServer {
     }
 
     @Override
-    public void registred(String name) throws RemoteException {
-        String sql = "INSERT INTO users(username) VALUES (?)";
+    public boolean checkPassword(String username, String password) throws RemoteException {
+        String sql = "SELECT username FROM users WHERE username = ? AND password = ?";
 
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
-//            preparedStatement.setInt(1, 3);
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, password);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public void registred(String name, String password) throws RemoteException {
+        String sql = "INSERT INTO users(username,password) VALUES (?,?)";
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
             preparedStatement.setString(1, name);
+            preparedStatement.setString(2, password);
             preparedStatement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-//    @Override
-//    public void getUsers(ChatClient client) throws RemoteException {
-//        try {
-//            Connection connection = DriverManager.getConnection(
-//                    "jdbc:postgresql://localhost:5432/chat",
-//                    "postgres",
-//                    "root"
-//            );
-//
-//            PreparedStatement statement = connection.prepareStatement("SELECT * FROM chat");
-//            ResultSet resultSet = statement.executeQuery();
-//
-//            while (resultSet.next()) {
-//                int id = resultSet.getInt("id");
-//                String username = resultSet.getString("username");
-//                client.print(username);
-//
-//            }
-//
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//
-//        }
-//
-//    }
+    @Override
+    public boolean hasDelete(String username, String password) throws RemoteException {
+        String sql = "DELETE FROM users WHERE username = ? AND password = ?";
 
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, password);
+
+            boolean flag = preparedStatement.execute();
+            if (flag) {
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
 
 }

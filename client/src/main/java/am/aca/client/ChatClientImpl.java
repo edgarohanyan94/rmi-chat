@@ -38,12 +38,6 @@ public class ChatClientImpl extends UnicastRemoteObject implements ChatClient, R
     }
 
     @Override
-    public void getUsers() throws RemoteException, SQLException {
-
-    }
-
-
-    @Override
     public void run() {
         Scanner scanner = new Scanner(System.in);
         String message;
@@ -52,9 +46,6 @@ public class ChatClientImpl extends UnicastRemoteObject implements ChatClient, R
             message = scanner.nextLine().trim();
 
             switch (message) {
-                case "aaa":
-
-                    break;
                 case QUIT:
                     try {
                         server.disconnect(this);
